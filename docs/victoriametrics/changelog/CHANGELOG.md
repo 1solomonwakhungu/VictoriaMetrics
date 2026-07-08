@@ -37,6 +37,7 @@ See also [LTS releases](https://docs.victoriametrics.com/victoriametrics/lts-rel
 * BUGFIX: [vmui](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#vmui): keep only one header navigation dropdown (`Explore`, `Tools`) open at a time. Previously, hovering across two dropdowns could briefly leave both open due to the close delay. See [#11224](https://github.com/VictoriaMetrics/VictoriaMetrics/pull/11224). Thanks to @antedotee for contribution.
 * BUGFIX: [vmagent](https://docs.victoriametrics.com/victoriametrics/vmagent/): fix a possible data race when processing OpenTelemetry metadata. See [#11238](https://github.com/VictoriaMetrics/VictoriaMetrics/pull/11238). Thanks to @nevgeny for contribution.
 * BUGFIX: [vmagent](https://docs.victoriametrics.com/victoriametrics/vmagent/): flush pending persistent queue data to chunk file before updating the metadata. This prevents the metadata writer offset from getting ahead of the chunk file size and avoids losing the persistent queue after an unclean shutdown. See [#11192](https://github.com/VictoriaMetrics/VictoriaMetrics/issues/11192).
+* BUGFIX: [vmalert](https://docs.victoriametrics.com/victoriametrics/vmalert/): fix rule state display on the `Groups` page in the web UI. See [#11160](https://github.com/VictoriaMetrics/VictoriaMetrics/issues/11160).
 
 ## [v1.147.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.147.0)
 

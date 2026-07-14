@@ -209,6 +209,8 @@ rules:
 [ debug: <bool> | default = false ]
 ```
 
+See a blogpost about [how rule groups work](https://victoriametrics.com/blog/alerting-recording-rules-alertmanager/#groups).
+
 ### Rules
 
 Every rule contains an `expr` field for the expression to evaluate against the configured datasource.
@@ -285,6 +287,8 @@ annotations:
   [ <labelname>: <tmpl_string> ]
 ```
 
+See a blogpost about [how alerting rules work](https://victoriametrics.com/blog/alerting-recording-rules-alertmanager/#alerting-rules).
+
 #### Recording rules
 
 The syntax for recording rules is the following:
@@ -322,10 +326,13 @@ labels:
 
 For recording rules to work `-remoteWrite.url` must be specified.
 
+See a blogpost about [how recording rules work](https://victoriametrics.com/blog/alerting-recording-rules-alertmanager/#recording-rules).
+
 ## Templating
 
 It is allowed to use [Go templating](https://golang.org/pkg/text/template/) in annotations and labels(with limited support) to format data, iterate over
 or execute expressions.
+See a blogpost about [templating alerts](https://victoriametrics.com/blog/alerting-recording-rules-alertmanager/#templates).
 The following variables are available in templating:
 
 | Variable                           | Description                                                                                                                                           | Example                                                                                                                                                                                |
@@ -928,7 +935,7 @@ See full description for these flags in `./vmalert -help`.
 
 ## Unit Testing for Rules
 
-You can use `vmalert-tool` to test your alerting and recording rules like [promtool does](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/).
+You can use `vmalert-tool` to [test your alerting and recording rules](https://victoriametrics.com/blog/alerting-best-practices/#testing-alerts) like [promtool does](https://prometheus.io/docs/prometheus/latest/configuration/unit_testing_rules/).
 See more details in [vmalert-tool](https://docs.victoriametrics.com/victoriametrics/vmalert-tool/#unit-testing-for-rules).
 
 ## Monitoring
@@ -981,6 +988,8 @@ Try the following tips to avoid common issues:
    * Example: `sum(count_over_time((metric == 0)[1h:]))` is missing a step after `1h:`.
     In that case, the default step will be used (`-datasource.queryStep`) and may cause unexpected results compared to
     executing this query in vmui/Grafana, where step is adjusted differently.
+
+See a blogpost about [reducing alert noise](https://victoriametrics.com/blog/alerting-best-practices/#reducing-noise).
 
 ### Rule state
 
@@ -1036,6 +1045,8 @@ Sometimes, it's hard to understand why a specific alert fired or not. Keep in mi
 
 If evaluation returns error (i.e. datasource is unavailable), alert state doesn't change.
 If at least one evaluation returns no data, then alert's `for` state resets.
+
+See a blogpost about [tuning the `for` param](https://victoriametrics.com/blog/alerting-best-practices/#the-for-param).
 
 > Note: The alert state is tracked separately for each time series returned during evaluation.
 > For example, if the 1st evaluation returns series A and B, and the 2nd evaluation returns only B – the alert will remain active **only for B**.
@@ -1109,6 +1120,8 @@ How to reduce the chance for a rule to flap:
 1. Review the metric's past behavior to set a threshold that avoids triggering alerts too easily.
 
 See [common mistakes](#common-mistakes) for rules config.
+
+See a blogpost about [tuning `keep_firing_for`](https://victoriametrics.com/blog/alerting-best-practices/#the-keep_firing_for-param).
 
 ### Never-firing alerts
 
@@ -1359,6 +1372,8 @@ dns_sd_configs:
 The list of configured or discovered Notifiers can be explored via [UI](#web).
 If Alertmanager runs in cluster mode then all its URLs needs to be available during discovery
 to ensure [high availability](https://github.com/prometheus/alertmanager#high-availability).
+
+See a blogpost about [how Alertmanager processes alerts](https://victoriametrics.com/blog/alerting-recording-rules-alertmanager/#alertmanager).
 
 The configuration file [specification](https://github.com/VictoriaMetrics/VictoriaMetrics/blob/master/app/vmalert/notifier/config.go)
 is the following:

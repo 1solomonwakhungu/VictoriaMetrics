@@ -59,6 +59,7 @@ Other PromQL functionality should work the same in MetricsQL.
 
 MetricsQL implements [PromQL](https://medium.com/@valyala/promql-tutorial-for-beginners-9ab455142085)
 and provides additional functionality mentioned below, which is aimed towards solving practical cases.
+See [operators and modifiers in MetricsQL](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#operators--modifiers) for details.
 Feel free [filing a feature request](https://github.com/VictoriaMetrics/VictoriaMetrics/issues) if you think MetricsQL misses certain useful functionality.
 
 This functionality can be evaluated at [VictoriaMetrics demo playground](https://play.victoriametrics.com/select/accounting/1/6a716b0f-38bc-4856-90ce-448fd713e3fe/prometheus/graph/)
@@ -156,7 +157,7 @@ MetricsQL provides the following functions:
 
 ### Rollup functions
 
-**Rollup functions** (aka range functions or window functions) calculate rollups over [raw samples](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#raw-samples)
+**[Rollup functions](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#rollup-functions)** (aka range functions or window functions) calculate rollups over [raw samples](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#raw-samples)
 on the given lookbehind window for the [selected time series](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#filtering).
 For example, `avg_over_time(temperature[24h])` calculates the average temperature over [raw samples](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#raw-samples) for the last 24 hours.
 
@@ -348,6 +349,7 @@ If the lookbehind window is skipped in square brackets, then it is automatically
 passed to [/api/v1/query_range](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#range-query) or [/api/v1/query](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#instant-query),
 while `scrape_interval` is the interval between [raw samples](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#raw-samples) for the selected time series.
 This allows avoiding unexpected gaps on the graph when `step` is smaller than the `scrape_interval`.
+See [range vector selectors](https://victoriametrics.com/blog/prometheus-monitoring-instant-range-query/#range-vector-selector) for details.
 
 #### delta
 
@@ -1110,7 +1112,7 @@ See also [zscore](#zscore), [range_trim_zscore](#range_trim_zscore) and [outlier
 
 ### Transform functions
 
-**Transform functions** calculate transformations over [rollup results](#rollup-functions).
+**[Transform functions](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#transformation-functions)** calculate transformations over [rollup results](#rollup-functions).
 For example, `abs(delta(temperature[24h]))` calculates the absolute value for every point of every time series
 returned from the rollup `delta(temperature[24h])`.
 
@@ -1846,7 +1848,7 @@ This function is supported by PromQL.
 
 ### Label manipulation functions
 
-**Label manipulation functions** perform manipulations with labels on the selected [rollup results](#rollup-functions).
+**[Label manipulation functions](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#label-manipulation-functions)** perform manipulations with labels on the selected [rollup results](#rollup-functions).
 
 Additional details:
 
@@ -2016,7 +2018,7 @@ See also [sort_by_label_numeric](#sort_by_label_numeric) and [sort_by_label_desc
 
 ### Aggregate functions
 
-**Aggregate functions** calculate aggregates over groups of [rollup results](#rollup-functions).
+**[Aggregate functions](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#aggregation-functions)** calculate aggregates over groups of [rollup results](#rollup-functions).
 
 Additional details:
 
@@ -2339,7 +2341,7 @@ See also [zscore_over_time](#zscore_over_time), [range_trim_zscore](#range_trim_
 
 ## Subqueries
 
-MetricsQL supports and extends PromQL subqueries. See [this article](https://valyala.medium.com/prometheus-subqueries-in-victoriametrics-9b1492b720b3) for details.
+MetricsQL supports and extends PromQL [subqueries](https://victoriametrics.com/blog/prometheus-monitoring-function-operator-modifier/#subqueries). See [this article](https://valyala.medium.com/prometheus-subqueries-in-victoriametrics-9b1492b720b3) for details.
 Any [rollup function](#rollup-functions) for something other than [series selector](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#filtering) form a subquery.
 Nested rollup functions can be implicit thanks to the [implicit query conversions](#implicit-query-conversions).
 For example, `delta(sum(m))` is implicitly converted to `delta(sum(default_rollup(m))[1i:1i])`, so it becomes a subquery,

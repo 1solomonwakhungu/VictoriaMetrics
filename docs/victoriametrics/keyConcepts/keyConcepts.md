@@ -40,7 +40,7 @@ requests_total{path="/", code="403"}
 The meta-information - a set of `labels` in curly braces - gives us a context for which `path` and with what `code`
 the `request` was served. Label-value pairs are always of a `string` type. VictoriaMetrics data model is schemaless,
 which means there is no need to define metric names or their labels in advance. The user is free to add or change ingested
-metrics anytime.
+metrics anytime. See [metric names and labels explained](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#metric-name-and-labels) for details.
 
 Actually, the metric name is also a label with a special name `__name__`. 
 The `__name__` key could be omitted {{% available_from "v1.111.0" %}} for simplicity. So the following series are identical:
@@ -75,7 +75,7 @@ See [these docs](https://docs.victoriametrics.com/victoriametrics/faq/#what-is-h
 
 #### Raw samples
 
-Every unique time series may consist of an arbitrary number of `(value, timestamp)` data points (aka `raw samples`) sorted by `timestamp`.
+Every unique time series may consist of an arbitrary number of `(value, timestamp)` data points (aka [`raw samples`](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#sample)) sorted by `timestamp`.
 VictoriaMetrics stores all the `values` as [float64](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
 with [extra compression](https://faun.pub/victoriametrics-achieving-better-compression-for-time-series-data-than-gorilla-317bc1f95932) applied.
 This allows storing precise integer values with up to 12 decimal digits and any floating-point values with up to 12 significant decimal digits.
@@ -126,7 +126,7 @@ type exists specifically to help users to understand how the metric was measured
 
 #### Counter
 
-Counter is a metric, which counts some events. Its value increases or stays the same over time.
+[Counter](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#counter) is a metric, which counts some events. Its value increases or stays the same over time.
 It cannot decrease in general case. The only exception is e.g. `counter reset`,
 when the metric resets to zero. The `counter reset` can occur when the service, which exposes the counter, restarts.
 So, the `counter` metric shows the number of observed events since the service start.
@@ -157,7 +157,7 @@ by humans from other metric types.
 
 #### Gauge
 
-Gauge is used for measuring a value that can go up and down:
+[Gauge](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#gauge) is used for measuring a value that can go up and down:
 
 ![gauge](gauge.webp)
 
@@ -178,7 +178,7 @@ and [rollup functions](https://docs.victoriametrics.com/victoriametrics/metricsq
 
 #### Histogram
 
-Histogram is a set of [counter](#counter) metrics with different `vmrange` or `le` labels.
+[Histogram](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#histogram) is a set of [counter](#counter) metrics with different `vmrange` or `le` labels.
 The `vmrange` or `le` labels define measurement boundaries of a particular bucket.
 When the observed measurement hits a particular bucket, then the corresponding counter is incremented.
 
@@ -282,7 +282,7 @@ We recommend reading the following articles before you start using histograms:
 
 #### Summary
 
-Summary metric type is quite similar to [histogram](#histogram) and is used for
+[Summary](https://victoriametrics.com/blog/prometheus-monitoring-metrics-counters-gauges-histogram-summaries/#summary) metric type is quite similar to [histogram](#histogram) and is used for
 [quantiles](https://prometheus.io/docs/practices/histograms/#quantiles) calculations. The main difference
 is that calculations are made on the client-side, so metrics exposition format already contains pre-defined
 quantiles:
@@ -504,6 +504,7 @@ Params:
 The result of Instant query is a list of [time series](https://docs.victoriametrics.com/victoriametrics/keyconcepts/#time-series)
 matching the filter in `query` expression. Each returned series contains exactly one `(timestamp, value)` entry,
 where `timestamp` equals to the `time` query arg, while the `value` contains `query` result at the requested `time`.
+See [instant vectors explained](https://victoriametrics.com/blog/prometheus-monitoring-instant-range-query/#instant-vector) for details.
 
 To understand how instant queries work, let's begin with a data sample:
 
@@ -606,6 +607,7 @@ at `start`, `start+step`, `start+2*step`, ..., `start+N*step` timestamps. In oth
 executed independently at `start`, `start+step`, ..., `start+N*step` timestamps with the only difference that an instant query
 does not return `ephemeral` samples (see below). Instead, if the database does not contain any samples for the requested time and step,
 it simply returns an empty result.
+See [range vectors explained](https://victoriametrics.com/blog/prometheus-monitoring-instant-range-query/#range-vector) for details.
 
 
 For example, to get the values of `foo_bar` during the time range from `2022-05-10T07:59:00Z` to `2022-05-10T08:17:00Z`,

@@ -358,13 +358,17 @@ func RoundToSignificantFigures(f float64, digits int) float64 {
 		v = vMax
 	}
 	var rem int64
-	for v > n {
+	for v >= n {
 		rem = v % 10
 		v /= 10
 		e++
 	}
 	if rem >= 5 {
 		v++
+		if v == n {
+			v = 1
+			e += int16(digits)
+		}
 	}
 	if isNegative {
 		v = -v

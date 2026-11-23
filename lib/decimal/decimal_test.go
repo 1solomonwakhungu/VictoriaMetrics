@@ -59,19 +59,83 @@ func TestRoundToSignificantFigures(t *testing.T) {
 			return
 		}
 		if result != resultExpected {
-			t.Fatalf("unexpected result; got %v; want %v", result, resultExpected)
+			t.Fatalf("unexpected result for RoundToSignificantFigures(%v, %d); got %v; want %v", f, digits, result, resultExpected)
 		}
 	}
 	f(1234, 0, 1234)
 	f(-12.34, 20, -12.34)
+	f(0, 1, 0)
+	f(1, 1, 1)
+	f(-1, 1, -1)
+	f(10, 1, 10)
 	f(12, 1, 10)
 	f(25, 1, 30)
 	f(2.5, 1, 3)
 	f(-0.56, 1, -0.6)
+	f(100, 1, 100)
+	f(104, 1, 100)
+	f(105, 1, 100)
+	f(109, 1, 100)
+	f(110, 1, 100)
+	f(149, 1, 100)
+	f(150, 1, 200)
+	f(-105, 1, -100)
+	f(-109, 1, -100)
+	f(-110, 1, -100)
+	f(1099, 1, 1000)
+	f(1005, 2, 1000)
+	f(1009, 2, 1000)
+	f(1010, 2, 1000)
+	f(1050, 2, 1100)
+	f(-1009, 2, -1000)
+	f(100.9, 2, 100)
+	f(10009, 3, 10000)
+	f(10010, 3, 10000)
+	f(9.99, 1, 10)
+	f(9.99, 2, 10)
+	f(9.99, 3, 9.99)
+	f(99.9, 2, 100)
+	f(-99.9, 2, -100)
+	f(999, 1, 1000)
+	f(999, 2, 1000)
+	f(999, 3, 999)
+	f(9.99e-308, 2, ToFloat(1, -307))
+	f(9.99e-20, 2, 1e-19)
+	f(9.99e307, 2, 1e308)
+	f(10000000000000008, 15, 1e16)
+	f(10000000000000008, 16, 10000000000000010)
+	f(10000000000000008, 17, 10000000000000008)
 	f(1234567, 3, 1230000)
 	f(-1.234567, 4, -1.235)
+	f(math.Inf(1), 2, math.Inf(1))
+	f(math.Inf(-1), 2, math.Inf(-1))
 	f(nan, 10, nan)
 	f(StaleNaN, 10, StaleNaN)
+
+	// Verify monotonicity and odd symmetry across power-of-10 boundaries.
+	for digits := 1; digits <= 4; digits++ {
+		prev := RoundToSignificantFigures(0, digits)
+		for i := 1; i <= 1200; i++ {
+			v := float64(i)
+			curr := RoundToSignificantFigures(v, digits)
+			if curr < prev {
+				t.Fatalf("non-monotonic rounding for digits=%d at %v: got %v < prev %v", digits, v, curr, prev)
+			}
+			if neg := RoundToSignificantFigures(-v, digits); neg != -curr {
+				t.Fatalf("asymmetric rounding for digits=%d at %v: got %v; want %v", digits, -v, neg, -curr)
+			}
+			prev = curr
+		}
+	}
+
+	// Verify power-of-10 boundary values for digits 1..14 where 10^(digits+1)+9 is exact in float64.
+	for digits := 1; digits <= 14; digits++ {
+		base := math.Pow10(digits + 1)
+		f(base+5, digits, base)
+		f(base+9, digits, base)
+		f(base+10, digits, base)
+		f(-(base + 9), digits, -base)
+	}
 }
 
 func TestPositiveFloatToDecimal(t *testing.T) {
